@@ -1440,17 +1440,17 @@ class ProgressPageTests(ModuleStoreTestCase):
         """Test that query counts remain the same for self-paced and instructor-paced courses."""
         SelfPacedConfiguration(enabled=self_paced_enabled).save()
         self.setup_course(self_paced=self_paced)
-        with self.assertNumQueries(41), check_mongo_calls(4):
+        with self.assertNumQueries(42), check_mongo_calls(2):
             self._get_progress_page()
 
     def test_progress_queries(self):
         self.setup_course()
-        with self.assertNumQueries(41), check_mongo_calls(4):
+        with self.assertNumQueries(42), check_mongo_calls(2):
             self._get_progress_page()
 
         # subsequent accesses to the progress page require fewer queries.
         for _ in range(2):
-            with self.assertNumQueries(27), check_mongo_calls(4):
+            with self.assertNumQueries(27), check_mongo_calls(2):
                 self._get_progress_page()
 
     @patch(
