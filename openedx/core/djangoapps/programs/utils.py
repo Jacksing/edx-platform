@@ -226,12 +226,11 @@ class ProgramProgressMeter(object):
             list of dicts, each representing a course run certificate
         """
         course_run_certificates = certificate_api.get_certificates_for_user(self.user.username)
-        completed_course_runs = [
+        return [
             {'course_run_id': unicode(certificate['course_key']), 'type': certificate['type']}
             for certificate in course_run_certificates
             if certificate_api.is_passing_status(certificate['status'])
         ]
-        return completed_course_runs
 
     def _is_course_in_progress(self, course):
         """Check if a user is in the process of completing a course.
@@ -338,7 +337,6 @@ class ProgramDataExtender(object):
             required_mode = CourseMode.mode_for_course(self.course_run_key, required_mode_slug)
             ecommerce = EcommerceService()
             sku = getattr(required_mode, 'sku', None)
-
             if ecommerce.is_enabled(self.user) and sku:
                 run_mode['upgrade_url'] = ecommerce.checkout_page_url(required_mode.sku)
             else:

@@ -81,26 +81,27 @@
 
 .program-details {
     .window-wrap {
-        background-color: rgb(255,255,255);
+        background-color: $white;
     }
 }
 .program-details-wrapper {
 
     .program-details-header {
-        background-color: rgb(252,252,252);
-        @media(min-width: $bp-screen-md) {
-            margin-left: 30px;
-            margin-right: 80px;
-        }
-        margin-left: 10px;
-        margin-right: 10px;
-        padding-top: 40px;
-        padding-bottom: 35px;
+        background-color: $light-gray4;
         display: flex;
         color: black;
         font-family: 'Open Sans';
         font-weight: normal;
         flex-wrap: wrap;
+        padding-top: 40px;
+        padding-bottom: 35px;
+        margin-left: 10px;
+        margin-right: 10px;
+
+        @media(min-width: $bp-screen-md) {
+            margin-left: 30px;
+            margin-right: 80px;
+        }
 
         .hd-1 {
             font-size: 1.5em;
@@ -121,7 +122,7 @@
         }
 
         .micromasters {
-            fill: #065784;
+            fill: $micromasters-color;
             width: 200px;
             @media(min-width: $bp-screen-md) {            
                 width: 250px;
@@ -129,7 +130,7 @@
         }
 
         .xseries {
-            fill: #065784;
+            fill: xseries-color;
             width: 150px;
             @media(min-width: $bp-screen-md) {            
                 width: 200px;
@@ -137,7 +138,7 @@
         }
 
         .professional.certificate {
-            fill: #065784;
+            fill: $professional-certificate-color;
             width: 250px;
             @media(min-width: $bp-screen-md) {            
                 width: 300px;
@@ -165,7 +166,7 @@
             .heading {
                 font-family: "Open Sans";
                 font-weight: bold;
-                color: #065784;
+                color: palette(primary, dark);
                 font-size: 0.9375em;
 
                 margin-top: auto;
@@ -203,7 +204,7 @@
     .course-list-heading {
         font-family: "Open Sans";
         font-weight: bold;
-        color: #065784;
+        color: palette(primary, dark);
         font-size: 0.9375em;
         line-height: normal;
         margin: 0;
@@ -214,7 +215,7 @@
     }
 
     .course-list > div:nth-of-type(even) {
-        background-color: #f9fafc;
+        background-color: $zebra-stripe-color;
     }
 
     .course-list-headings {
@@ -223,7 +224,7 @@
         .divider {
             margin-left: 0;
             margin-bottom: 20px;
-            background-color: #BBC7D2;
+            background-color: $divider-color;
             height: 2px;
             width: 320px;
             @media(min-width: $bp-screen-sm) {
@@ -249,8 +250,8 @@
             font-family: "Open Sans";
             font-weight: 600;
             font-size: 1.3em;
-            color: #373737;
-            margin-bottom: 0 0 5px 0;
+            color: palette(grayscale, base);
+            margin-bottom: 5px;
             line-height: normal;
         }
 
@@ -269,7 +270,7 @@
             }
 
             button {
-                background-color: #3C5E7E;
+                background-color: palette(primary, dark);
                 height: 37px;
                 width: 128px;
                 border-radius: 0;
@@ -288,7 +289,7 @@
             font-family: "Open Sans";
             font-weight: bold;
             font-size: 0.9375em;
-            color: #2c3e50;
+            color: palette(grayscale, base);
             margin-top: 6px;
             margin-right: 2px;
             display: block;
@@ -345,15 +346,19 @@
 
             .course-title { 
                 font-size: 1em;
-                color: #0976b5;
+                color: palette(primary, base);
                 font-weight: 600;
                 text-decoration: underline;
                 margin: 0;
             }
 
             .run-period {
-                color: #292929;
+                color: palette(grayscale, base);
                 font-size: 0.9375em;
+            }
+
+            .course-text .enrolled {
+                color: palette(grayscale, base);
             }
         }
 
@@ -381,8 +386,8 @@
             flex-wrap: wrap;
 
             .upgrade-button {
-                background: #006d01;
-                border-color: #006d01;
+                background: palette(success, text);
+                border-color: palette(success, text);
                 height: 37px;
                 width: 128px;
                 border-radius: 0;
@@ -413,7 +418,7 @@
                     font-family: "Open Sans";
                     font-weight: bold;
                     font-size: 0.9375em;
-                    color: #2c3e50;
+                    color: palette(grayscale, base);
                     display: block;
                     @media(min-width: $bp-screen-sm) {
                         display: inline;
@@ -421,7 +426,7 @@
                 }
 
                 .price {
-                    color: #006d01;
+                    color: palette(success, text);
                     font-weight: bold;
                 }
             }
@@ -430,18 +435,18 @@
 
         .certificate-status {
             .fa-check-circle {
-                color: #006d01;
+                color: palette(success, text);
             }
 
             .card-msg {
                 font-family: "Open Sans";
                 font-weight: bold;
                 font-size: 0.9375em;
-                color: #2c3e50;
+                color: palette(grayscale, base);
             }
 
             .certificate-status-msg {
-                color: #292929;
+                color: palette(grayscale, base);
                 font-size: 0.9375em;
             }
         }

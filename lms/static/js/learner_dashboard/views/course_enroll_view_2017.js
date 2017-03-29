@@ -31,9 +31,6 @@
                      this.enrollModel = options.enrollModel;
                      this.urlModel = options.urlModel;
                      this.render();
-                     if (this.urlModel) {
-                         this.trackSelectionUrl = this.urlModel.get('track_selection_url');
-                     }
                  },
 
                  render: function() {
@@ -43,12 +40,19 @@
                          HtmlUtils.setHtml(this.$el, filledTemplate);
                          HtmlUtils.setHtml(this.$parentEl, HtmlUtils.HTML(this.$el));
                      }
+                     this.postRender();
+                 },
+
+                 postRender: function() {
+                     if (this.urlModel) {
+                         this.trackSelectionUrl = this.urlModel.get('track_selection_url');
+                     }
                  },
 
                  handleEnroll: function() {
                     // Enrollment click event handled here
                      if (!this.model.get('course_run_key')) {
-                         this.$('.select-error').css('visibility', 'visible');
+                         this.$('.select-error').addClass('visible');
                      } else if (!this.model.get('is_enrolled')) {
                          // Create the enrollment.
                          this.enrollModel.save({

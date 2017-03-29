@@ -59,7 +59,9 @@
                         $.extend(unselectedRun, {
                             course_image_url: courseImageUrl,
                             marketing_url: courseRun.marketing_url,
-                            is_enrollment_open: courseRun.is_enrollment_open
+                            is_enrollment_open: courseRun.is_enrollment_open,
+                            start: courseRun.start,
+                            end: courseRun.end
                         });
                     }
 
@@ -85,6 +87,12 @@
                     _.each(enrollableCourseRuns, (function(courseRun) {
                         // eslint-disable-next-line no-param-reassign
                         courseRun.start_date = this.formatDate(courseRun.start);
+                        // eslint-disable-next-line no-param-reassign
+                        courseRun.end_date = this.formatDate(courseRun.end);
+
+                        // This is used to render the date when selecting a course run to enroll in
+                        // eslint-disable-next-line no-param-reassign
+                        courseRun.dateString = this.formatDateString(courseRun);
                     }).bind(this));
 
                     return enrollableCourseRuns;
@@ -116,21 +124,52 @@
                 },
 
                 getCertificatePriceString: function(run) {
-                    var verified_seat, currency;
-                    if ('seats' in run && run['seats'].length) {
-                        verified_seat = _.filter(run['seats'], function(seat){
-                            if (seat['type'] === 'verified' || seat['type'] === 'professional' || seat['type'] === 'credit'){
+                    var verifiedSeat, currency;
+                    if ('seats' in run && run.seats.length) {
+                        // eslint-disable-next-line consistent-return
+                        verifiedSeat = _.filter(run.seats, function(seat) {
+                            if (['verified', 'professional', 'credit'].indexOf(seat.type) >= 0) {
                                 return seat;
                             }
-                        })[0]
-                        currency = verified_seat['currency'];
-                        if (currency === 'USD'){
-                            return '$' + verified_seat['price'];
+                        })[0];
+                        currency = verifiedSeat.currency;
+                        if (currency === 'USD') {
+                            return '$' + verifiedSeat.price;
                         } else {
-                            return verified_seat['price'] + " " + currency;
+                            return verifiedSeat.price + ' ' + currency;
                         }
                     }
                     return null;
+                },
+
+                formatDateString: function(run) {
+                    var pacingType = run.pacing_type,
+                       dateString = '',
+                       start = run.start_date || this.get('start_date'),
+                       end = run.end_date || this.get('end_date'),
+                       now = new Date(),
+                       startDate = new Date(start),
+                       endDate = new Date(end);
+
+                    if (pacingType === 'self_paced') {
+                        dateString = 'Self-paced';
+                        if (start && startDate > now) {
+                            dateString += ' - Starts ' + start;
+                        } else if (end && endDate > now) {
+                            dateString += ' - Ends ' + end;
+                        } else if (end && endDate < now) {
+                            dateString += ' - Ended ' + end;
+                        }
+                    } else if (pacingType === 'instructor_paced') {
+                        if (start && end) {
+                            dateString = start + ' - ' + end;
+                        } else if (start) {
+                            dateString = 'Starts ' + start;
+                        } else if (end) {
+                            dateString = 'Ends ' + end;
+                        }
+                    }
+                    return dateString;
                 },
 
                 setActiveCourseRun: function(courseRun, userPreferences) {
@@ -138,7 +177,8 @@
                         courseImageUrl;
 
                     if (courseRun) {
-                        if (courseRun.advertised_start !== undefined && courseRun.advertised_start !== 'None' && courseRun.advertised_start !== null) {
+
+                        if (!([undefined, 'None', null].indexOf(courseRun.advertised_start) >= 0)) {
                             startDateString = courseRun.advertised_start;
                         } else {
                             startDateString = this.formatDate(courseRun.start, userPreferences);
@@ -149,6 +189,7 @@
                         } else {
                             courseImageUrl = courseRun.course_image_url;
                         }
+
 
                         this.set({
                             certificate_url: courseRun.certificate_url,
@@ -169,6 +210,9 @@
                             upgrade_url: courseRun.upgrade_url,
                             price: this.getCertificatePriceString(courseRun)
                         });
+
+                        // This is used to render the date for completed and in progress courses
+                        this.set({dateString: this.formatDateString(courseRun)});
                     }
                 },
 

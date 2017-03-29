@@ -46,6 +46,7 @@
                         this.courseData.get('not_started') || [],
                         this.options.userPreferences
                      );
+
                      this.render();
                  },
 
@@ -54,7 +55,12 @@
                          inProgressCount = this.inProgressCourseCollection.length,
                          remainingCount = this.remainingCourseCollection.length,
                          totalCount = completedCount + inProgressCount + remainingCount,
-                         data = {totalCount: totalCount, inProgressCount: inProgressCount};
+                         data = {
+                             totalCount: totalCount,
+                             inProgressCount: inProgressCount,
+                             remainingCount: remainingCount,
+                             completedCount: completedCount
+                         };
                      data = $.extend(data, this.options.programData);
                      HtmlUtils.setHtml(this.$el, this.tpl(data));
                      this.postRender();
@@ -65,31 +71,37 @@
                          model: new Backbone.Model(this.options)
                      });
 
-                     new CollectionListView({
-                         el: '.js-course-list-remaining',
-                         childView: CourseCardView,
-                         collection: this.remainingCourseCollection,
-                         context: this.options
-                     }).render();
+                     if (this.remainingCourseCollection.length > 0) {
+                         new CollectionListView({
+                             el: '.js-course-list-remaining',
+                             childView: CourseCardView,
+                             collection: this.remainingCourseCollection,
+                             context: this.options
+                         }).render();
+                     }
 
-                     new CollectionListView({
-                         el: '.js-course-list-completed',
-                         childView: CourseCardView,
-                         collection: this.completedCourseCollection,
-                         context: this.options
-                     }).render();
+                     if (this.completedCourseCollection.length > 0) {
+                         new CollectionListView({
+                             el: '.js-course-list-completed',
+                             childView: CourseCardView,
+                             collection: this.completedCourseCollection,
+                             context: this.options
+                         }).render();
+                     }
 
-                    // This is last because the context is modified below
-                     new CollectionListView({
-                        el: '.js-course-list-in-progress',
-                        childView: CourseCardView,
-                        collection: this.inProgressCourseCollection,
-                        context: $.extend(this.options, {enrolled: gettext('Enrolled')})
-                     }).render();
+                     if (this.inProgressCourseCollection.length > 0) {
+                         // This is last because the context is modified below
+                         new CollectionListView({
+                             el: '.js-course-list-in-progress',
+                             childView: CourseCardView,
+                             collection: this.inProgressCourseCollection,
+                             context: $.extend(this.options, {enrolled: gettext('Enrolled')})
+                         }).render();
+                     }
 
                      new SidebarView({
-                        el: '.sidebar',
-                        context: this.options
+                         el: '.sidebar',
+                         context: this.options
                      }).render();
                  }
              });
