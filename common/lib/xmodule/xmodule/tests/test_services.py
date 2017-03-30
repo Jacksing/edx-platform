@@ -10,11 +10,18 @@ from django.conf import settings
 from django.test.utils import override_settings
 
 from xblock.runtime import Mixologist
-from xmodule.services import SettingsService
+from xmodule.services import ConfigurationService, SettingsService
 
 
 class _DummyBlock(object):
     """ Dummy Xblock class """
+    pass
+
+
+class DummyConfig(object):
+    """
+    Dummy Configuration
+    """
     pass
 
 
@@ -76,3 +83,15 @@ class TestSettingsService(TestCase):
         block = mixologist.mix(_DummyBlock)
         self.assertEqual(settings.XBLOCK_SETTINGS, {"_DummyBlock": [1, 2, 3]})
         self.assertEqual(self.settings_service.get_settings_bucket(block), [1, 2, 3])
+
+
+class TestConfigurationService(TestCase):
+    """
+    Tests for ConfigurationService
+    """
+    def test_configuration_service(self):
+        """
+        Test the correct configuration on instantiating ConfigurationService.
+        """
+        config_service = ConfigurationService(DummyConfig)
+        self.assertEqual(config_service.configuration, DummyConfig)

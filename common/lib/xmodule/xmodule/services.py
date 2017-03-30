@@ -61,3 +61,18 @@ class SettingsService(object):
         xblock_settings_bucket = getattr(block, self.xblock_settings_bucket_selector, block.unmixed_class.__name__)
         xblock_settings = settings.XBLOCK_SETTINGS if hasattr(settings, "XBLOCK_SETTINGS") else {}
         return xblock_settings.get(xblock_settings_bucket, actual_default)
+
+
+class ConfigurationService(object):
+    """
+    A XBlock service to talk with the Configuration Models. This service should provide
+    a pathway to Configuration Model which is designed to configure the corresponding XBlock.
+    """
+    def __init__(self, configuration_model):
+        """
+        Class initializer, this exposes configuration model to XBlock.
+
+        Arguments:
+            configuration_model (ConfigurationModel): configurations for an XBlock
+        """
+        self.configuration = configuration_model
