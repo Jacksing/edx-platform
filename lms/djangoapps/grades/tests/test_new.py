@@ -26,7 +26,9 @@ from xmodule.modulestore.xml_importer import import_course_from_xml
 
 from ..config.waffle import waffle, ASSUME_ZERO_GRADE_IF_ABSENT
 from ..models import PersistentSubsectionGrade
+from ..new.course_data import CourseData
 from ..new.course_grade_factory import CourseGradeFactory
+from ..new.course_grade import ZeroCourseGrade
 from ..new.subsection_grade_factory import SubsectionGrade, SubsectionGradeFactory
 from .utils import mock_get_score, mock_get_submissions_score
 
@@ -277,6 +279,26 @@ class TestSubsectionGradeFactory(ProblemSubmissionTestMixin, GradeTestBase):
             ):
                 self.subsection_grade_factory.create(self.sequence)
         self.assertEqual(mock_read_saved_grade.called, feature_flag and course_setting)
+
+
+class ZeroGradeTest(GradeTestBase):
+    """
+    Tests ZeroCourseGrade (and, implicitly, ZeroSubsectionGrade)
+    functionality.
+    """
+
+    def test_zero(self):
+        """
+        Creates a ZeroCourseGrade and ensures it's empty.
+        """
+        course_data = CourseData(self.request.user, structure=self.course_structure)
+        chapter_grades = ZeroCourseGrade(self.request.user, course_data).chapter_grades
+        for chapter in chapter_grades:
+            for section in chapter_grades[chapter]['sections']:
+                for score in section.locations_to_scores.itervalues():
+                    self.assertEqual(score.earned, 0)
+                    self.assertEqual(score.attempted, False)
+                self.assertEqual(section.all_total.earned, 0)
 
 
 class SubsectionGradeTest(GradeTestBase):

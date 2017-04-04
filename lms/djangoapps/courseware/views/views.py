@@ -867,7 +867,7 @@ def _progress(request, course_key, student_id):
     # additional DB lookup (this kills the Progress page in particular).
     student = User.objects.prefetch_related("groups").get(id=student.id)
 
-    if student_id != request.user.id:
+    if student_id != student.id:
         # refetch the course as the assumed student
         course = get_course_with_access(student, 'load', course_key, check_if_enrolled=True)
     prep_course_for_grading(course, request)

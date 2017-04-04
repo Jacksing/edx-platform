@@ -19,6 +19,8 @@ class CourseGradeFactory(object):
     """
     Factory class to create Course Grade objects.
     """
+    GradeResult = namedtuple('GradeResult', ['student', 'course_grade', 'err_msg'])
+
     def create(self, user, course=None, collected_block_structure=None, course_structure=None, course_key=None):
         """
         Returns the CourseGrade for the given user in the course.
@@ -74,8 +76,6 @@ class CourseGradeFactory(object):
         """
         course_data = CourseData(user, course, collected_block_structure, course_structure, course_key)
         return self._update(user, course_data, read_only=False)
-
-    GradeResult = namedtuple('GradeResult', ['student', 'course_grade', 'err_msg'])
 
     def iter(self, course, students, force_update=False):
         """

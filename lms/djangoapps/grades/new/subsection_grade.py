@@ -61,8 +61,8 @@ class ZeroSubsectionGrade(SubsectionGradeBase):
     """
     def __init__(self, subsection, course_data):
         super(ZeroSubsectionGrade, self).__init__(subsection)
-        self.graded_total = 0
-        self.all_total = 0
+        self.graded_total = AggregatedScore(tw_earned=0, tw_possible=None, graded=False, attempted=False)
+        self.all_total = AggregatedScore(tw_earned=0, tw_possible=None, graded=self.graded, attempted=False)
         self.course_data = course_data
 
     @lazy
