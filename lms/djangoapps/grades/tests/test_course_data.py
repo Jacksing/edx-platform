@@ -16,16 +16,15 @@ class CourseDataTest(ModuleStoreTestCase):
 
     def setUp(self):
         super(CourseDataTest, self).setUp()
-        self.factory_course = CourseFactory.create()
+        self.course = CourseFactory.create()
         self.user = UserFactory.create()
-        self.factory_course = CourseFactory.create()
-        self.one_true_structure = get_course_blocks(self.user, self.factory_course.location)
+        self.one_true_structure = get_course_blocks(self.user, self.course.location)
         self.expected_results = {
-            'course': self.factory_course,
+            'course': self.course,
             'collected_block_structure': self.one_true_structure,
             'structure': self.one_true_structure,
-            'course_key': self.factory_course.id,
-            'location': self.factory_course.location,
+            'course_key': self.course.id,
+            'location': self.course.location,
         }
 
     @patch('lms.djangoapps.grades.new.course_data.get_course_blocks')
@@ -52,5 +51,5 @@ class CourseDataTest(ModuleStoreTestCase):
 
         Maybe a dict pairing asked-for properties to resulting exceptions? Or an exception on init?
         """
-        with self.assertRaises(AttributeError):
-            course_data = CourseData(self.user)  # pylint:disable=unused-variable
+        with self.assertRaises(ValueError):
+            _ = CourseData(self.user)

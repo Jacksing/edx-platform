@@ -46,6 +46,7 @@ from courseware.tests.factories import StudentModuleFactory, GlobalStaffFactory
 from courseware.url_helpers import get_redirect_url
 from courseware.user_state_client import DjangoXBlockUserStateClient
 from lms.djangoapps.commerce.utils import EcommerceService  # pylint: disable=import-error
+from lms.djangoapps.grades.config.waffle import waffle as grades_waffle, ASSUME_ZERO_GRADE_IF_ABSENT
 from milestones.tests.utils import MilestonesTestCaseMixin
 from openedx.core.djangoapps.catalog.tests.factories import CourseFactory as CatalogCourseFactory
 from openedx.core.djangoapps.catalog.tests.factories import ProgramFactory, CourseRunFactory
@@ -1443,15 +1444,21 @@ class ProgressPageTests(ModuleStoreTestCase):
         with self.assertNumQueries(42), check_mongo_calls(2):
             self._get_progress_page()
 
-    def test_progress_queries(self):
+    @ddt.data(
+        (False, 41, 27),
+        (True, 41, 27)
+    )
+    @ddt.unpack
+    def test_progress_queries(self, enable_waffle, initial, subsequent):
         self.setup_course()
-        with self.assertNumQueries(42), check_mongo_calls(2):
-            self._get_progress_page()
-
-        # subsequent accesses to the progress page require fewer queries.
-        for _ in range(2):
-            with self.assertNumQueries(27), check_mongo_calls(2):
+        with grades_waffle().override(ASSUME_ZERO_GRADE_IF_ABSENT, active=enable_waffle):
+            with self.assertNumQueries(initial), check_mongo_calls(2):
                 self._get_progress_page()
+
+            # subsequent accesses to the progress page require fewer queries.
+            for _ in range(2):
+                with self.assertNumQueries(subsequent), check_mongo_calls(2):
+                    self._get_progress_page()
 
     @patch(
         'lms.djangoapps.grades.new.course_grade.CourseGrade.summary',
