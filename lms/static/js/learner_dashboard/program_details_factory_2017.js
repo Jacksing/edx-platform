@@ -6,7 +6,6 @@
     ],
     function(ProgramDetailsView) {
         return function(options) {
-console.log('hello');
             var ProgramDetails = new ProgramDetailsView(options);
             return ProgramDetails;
         };

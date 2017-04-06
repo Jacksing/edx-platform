@@ -18,24 +18,22 @@
         ) {
             return Backbone.View.extend({
                 x: 22,
-                y: this.x,
+                y: 22,
                 radius: 16,
                 degrees: 180,
-                strokeWidth: 1.4,
+                strokeWidth: 1.2,
 
                 viewTpl: _.template(programProgressTpl),
                 segmentTpl: _.template(progressSegmentTpl),
 
-                initialize: function() {
+                initialize: function(options) {
                     var progress;
 
                     // Temp. for development
-                    this.model.set({
-                        progress: {
-                            completed: 3,
-                            in_progress: 0,
-                            not_started: 3
-                        }
+                    this.model = new Backbone.Model({
+                        title: options.title || false,
+                        label: options.label || false,
+                        progress: options.progress || {}
                     });
                     progress = this.model.get('progress');
 
@@ -48,11 +46,14 @@
 
                 render: function() {
                     var data = $.extend({}, this.model.toJSON(), {
-                        progress: this.getProgressSegments(),
+                        circleSegments: this.getProgressSegments(),
                         x: this.x,
                         y: this.y,
                         radius: this.radius,
-                        strokeWidth: this.strokeWidth
+                        strokeWidth: this.strokeWidth,
+                        programData: {
+                            type: 'XSeries'
+                        }
                     });
 
                     this.$el.html(this.viewTpl(data));
@@ -68,7 +69,7 @@
 
                 getProgressSegments: function() {
                     var progressHTML = [],
-                        total = this.model.get('total'),
+                        total = this.model.get('totalCourses'),
                         segmentDash = 2 * Math.PI * this.radius,
                         degreeInc = this.getDegreeIncrement(total),
                         data = {
@@ -81,14 +82,21 @@
                             radius: this.radius,
                             strokeWidth: this.strokeWidth
                         },
-                        i;
+                        i,
+                        segmentData;
 
                     for (i = 0; i < total; i++) {
-                        progressHTML.push(this.segmentTpl($.extend({}, data, {
-                            classList: (i > this.model.get('progress').complete) ? 'incomplete' : 'complete',
-                            dashArray: (i + 1 === len) ? segmentDash - this.strokeWidth : segmentDash,
+                        segmentData = $.extend({}, data, {
+                            classList: (i >= this.model.get('progress').completed) ? 'incomplete' : 'complete',
                             degrees: data.degrees + (i * degreeInc)
-                        })));
+                        });
+
+                        // Want the incomplete segments to have no gaps
+                        if (segmentData.classList === 'incomplete' && (i + 1) < total) {
+                            segmentData.dashArray = segmentDash;
+                        }
+                        
+                        progressHTML.push(this.segmentTpl(segmentData));
                     }
 
                     return progressHTML.join('');

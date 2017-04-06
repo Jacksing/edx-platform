@@ -1,0 +1,52 @@
+.program-progress {
+    width: 300px;
+}
+
+.progress-heading {
+    color: $blue-d1;
+    text-align: center;
+    margin-bottom: 0;
+    font: {
+        size: 1.1em;
+        weight: 700;
+    }
+}
+
+.progress-circle-wrapper {
+    position: relative;
+    margin-top: -20px;
+
+    .progress-label {
+        position: absolute;
+        width: 100%;
+        top: 92px;
+        text-align: center;
+    }
+
+    .numbers {
+        font-size: 3em;
+        color: $gray;
+
+        .complete {
+            color: $blue-d1;
+        }
+    }
+    
+    .label {
+        font: {
+            size: 1.1em;
+            weight: 600;
+        }
+        color: palette(grayscale, base);
+    }
+}
+
+.progress-circle {
+    .complete {
+        stroke: $blue-u1;
+    }
+
+    .incomplete {
+        stroke: $gray-l3;
+    }
+}

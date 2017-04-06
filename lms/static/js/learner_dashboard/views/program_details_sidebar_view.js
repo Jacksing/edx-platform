@@ -5,41 +5,49 @@
             'jquery',
             'underscore',
             'gettext',
-            'js/learner_dashboard/views/explore_new_programs_view',
+            'js/learner_dashboard/views/program_progress_view',
             'js/learner_dashboard/views/certificate_view',
-            'text!../../../templates/learner_dashboard/sidebar.underscore'
+            'text!../../../templates/learner_dashboard/program_details_sidebar.underscore'
            ],
          function(
              Backbone,
              $,
              _,
              gettext,
-             NewProgramsView,
+             ProgramProgressView,
              CertificateView,
              sidebarTpl
          ) {
              return Backbone.View.extend({
-                 el: '.sidebar',
-
                  tpl: _.template(sidebarTpl),
 
-                 initialize: function(data) {
-                     this.context = data.context;
+                 initialize: function(options) {
+                     this.courseModel = options.courseModel || {};
+                     this.certificateCollection = options.certificateCollection || {};
+                     this.render();
                  },
 
                  render: function() {
-                     this.$el.html(this.tpl(this.context));
+                     this.$el.html(this.tpl());
                      this.postRender();
                  },
 
                  postRender: function() {
-                     this.newProgramsView = new NewProgramsView({
-                         context: this.context
+console.log(this.model.toJSON());
+                     this.newProgramProgressView = new ProgramProgressView({
+                         el: '.js-program-progress',
+                         title: this.model.get('type') + 'Progress',
+                         label: gettext('Earned Certificates'),
+                         progress: {
+                            completed: this.courseModel.get('completed').length,
+                            in_progress: this.courseModel.get('in_progress').length,
+                            not_started: this.courseModel.get('not_started').length
+                        }
                      });
 
-                     this.newCertificateView = new CertificateView({
-                         context: this.context
-                     });
+                     // this.newCertificateView = new CertificateView({
+                     //     context: this.context
+                     // });
                  }
              });
          }

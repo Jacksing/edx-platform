@@ -1,11 +1,16 @@
-<h2 class="progress-heading"><%- _.sprintf( gettext('%(programType)s Progress'), { programType: programData.type } ) %></h2>
-<svg class="progress-circle" viewBox="0 0 44 44" aria-hidden="true">
-    <circle class="js-circle bg" r="<%- radius %>" cx="<%- x %>" cy="<%- y %>" stroke-width="<%- strokeWidth %>" fill="none"></circle>
-    <%= progress %>
-</svg>
-<div class="earned-certs">
-    <div class="numbers">
-        <span class="complete"><%- progress.completed %></span>/<span class="total"><%- totalCourses %></span>
+<% if (title) { %>
+<h2 class="progress-heading"><%- title %></h2>
+<% } %>
+<div class="progress-circle-wrapper">
+    <svg class="progress-circle" viewBox="0 0 44 44" aria-hidden="true">
+        <circle class="js-circle bg" r="<%- radius %>" cx="<%- x %>" cy="<%- y %>" stroke-width="<%- strokeWidth %>" fill="none"></circle>
+        <%= circleSegments %>
+    </svg>
+    <div class="progress-label">
+        <div class="numbers">
+            <span class="complete"><%- progress.completed %></span>/<span class="total"><%- totalCourses %></span>
+        </div>
+        <div class="label"><% if (label) { %><%- label %><% } %></div>
+        
     </div>
-    <%- gettext('Earned Certificates') %>
 </div>
